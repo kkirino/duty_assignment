@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
+    />
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById("get-btn").addEventListener("click", doGetInfo);
+        document
+          .getElementById("write-btn")
+          .addEventListener("click", doWriteInfo);
+        const elems = document.querySelectorAll(".datepicker");
+        M.Datepicker.init(elems, {
+          autoClose: true,
+        });
+        const dropdown = document.querySelectorAll(".dropdown-trigger");
+        M.Dropdown.init(dropdown, { constrainWidth: false });
+      });
+      function showAlert(message) {
+        alert(message);
+      }
+      function doGetInfo() {
+        let userInfo = {};
+        userInfo.dateFrom = document.getElementById("date-from").value;
+        userInfo.dateTo = document.getElementById("date-to").value;
+        google.script.run
+          .withSuccessHandler(showAlert)
+          .createSchedules(userInfo);
+        document.getElementById("date-from").value = "";
+        document.getElementById("date-to").value = "";
+      }
+      function doWriteInfo() {
+        const isCheckedOutside =
+          document.getElementById("checkboxOutside").checked;
+        const isCheckedInside =
+          document.getElementById("checkboxInside").checked;
+        google.script.run
+          .withSuccessHandler(showAlert)
+          .writeCalendarEvents(isCheckedInside, isCheckedOutside);
+        document.getElementById("checkboxInside").checked = false;
+        document.getElementById("checkboxOutside").checked = false;
+      }
+    </script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <p>
+          <i class="material-icons">check</i
+          >操作については以下のリンクを参照してください
+        </p>
+        <a class="dropdown-trigger btn" href="#" data-target="dropdown1"
+          >参照リンク</a
+        >
+        <ul id="dropdown1" class="dropdown-content">
+          <li>
+            <a href="<?!= getSettings().manualPageUrl; ?>" target="_blank">
+              <i class="material-icons">insert_drive_file</i>操作マニュアル
+            </a>
+          </li>
+          <li>
+            <a href="https://calendar.google.com/calendar" target="_blank">
+              <i class="material-icons">web</i>Googleカレンダー
+            </a>
+          </li>
+        </ul>
+        <br />
+        <br />
+      </div>
+      <div class="row">
+        <p>
+          <i class="material-icons">check</i
+          >スケジュール作成開始日を選んでください
+        </p>
+        <div class="input-field col s6">
+          <input type="text" id="date-from" class="datepicker" />
+          <label for="date-from">開始日</label>
+        </div>
+      </div>
+      <div class="row">
+        <p>
+          <i class="material-icons">check</i
+          >スケジュール作成終了日を選んでください
+        </p>
+        <div class="input-field col s6">
+          <input type="text" id="date-to" class="datepicker" />
+          <label for="date-to">終了日</label>
+        </div>
+      </div>
+      <div class="row">
+        <p>
+          <i class="material-icons">check</i
+          >ボタンを押すと新しいシートに選択期間のスケジュールが作成されます
+        </p>
+        <button
+          class="btn waves-effect waves-light"
+          id="get-btn"
+          type="submit"
+          name="action"
+        >
+          スケジュール作成
+          <i class="material-icons right">send</i>
+        </button>
+        <br />
+        <br />
+      </div>
+      <div class="row">
+        <p>
+          <i class="material-icons">check</i
+          >作成したスケジュールをカレンダーに登録する場合は下記のチェックボックスに忘れずにチェックを入れてください
+        </p>
+        <p>
+          <label>
+            <input type="checkbox" class="filled-in" id="checkboxOutside" />
+            <span>外勤をカレンダーに登録する</span>
+          </label>
+        </p>
+        <p>
+          <label>
+            <input type="checkbox" class="filled-in" id="checkboxInside" />
+            <span>大学当番をカレンダーに登録する</span>
+          </label>
+        </p>
+        <br />
+      </div>
+      <div class="row">
+        <p>
+          <i class="material-icons">check</i>
+          ボタンを押すと Google カレンダーにスケジュールが登録されます
+        </p>
+        <button
+          class="btn waves-effect waves-light"
+          id="write-btn"
+          type="submit"
+          name="action"
+        >
+          カレンダー登録
+          <i class="material-icons right">send</i>
+        </button>
+        <br />
+        <br />
+      </div>
+    </div>
+  </body>
+</html>
